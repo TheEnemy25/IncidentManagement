@@ -1,23 +1,21 @@
-using IncidentManagement.Data.Contexts;
-using Microsoft.EntityFrameworkCore;
+using IncidentManagement.Data;
+using IncidentManagement.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<IncidentDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+builder.Services
+    .RegisterDbContext(builder.Configuration)
+    .RegisterRepositories()
+    .RegisterAutoMapper()
+    .RegisterValidators()
+    .RegisterApplicationServices();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

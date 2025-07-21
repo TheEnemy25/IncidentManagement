@@ -13,15 +13,13 @@ namespace IncidentManagement.Data.EntityConfigurations
             builder.HasKey(a => a.Id);
 
             builder.HasIndex(a => a.Name).IsUnique();
-            builder.Property(a => a.Name).IsRequired();
-
-            builder.Property(a => a.IncidentName).IsRequired();
+            builder.Property(a => a.Name).IsRequired().HasMaxLength(50);
 
             builder.HasOne(a => a.Incident)
                 .WithMany(i => i.Accounts)
                 .HasForeignKey(a => a.IncidentName)
                 .HasPrincipalKey(i => i.Name)
-                .IsRequired();
+                .IsRequired(false);
         }
     }
 }

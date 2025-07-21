@@ -13,7 +13,7 @@ namespace IncidentManagement.Data.EntityConfigurations
             builder.HasKey(i => i.Name);
             builder.Property(i => i.Name).ValueGeneratedOnAdd();
 
-            builder.Property(i => i.Description).IsRequired();
+            builder.Property(i => i.Description).IsRequired().HasMaxLength(500);
         }
     }
 }

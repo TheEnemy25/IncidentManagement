@@ -1,9 +1,10 @@
-﻿using System.Linq.Expressions;
+﻿using IncidentManagement.Data.Entities;
+using System.Linq.Expressions;
 
 namespace IncidentManagement.Data.Repositories
 {
     public interface IBaseRepository<TEntity>
-          where TEntity : class
+          where TEntity : class, IEntity
     {
         IQueryable<TEntity> Query(params Expression<Func<TEntity, object>>[] includes);
         ValueTask<TEntity> GetByIdAsync(params object[] keys);

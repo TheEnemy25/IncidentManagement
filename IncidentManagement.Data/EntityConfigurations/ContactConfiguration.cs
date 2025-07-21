@@ -13,10 +13,10 @@ namespace IncidentManagement.Data.EntityConfigurations
             builder.HasKey(c => c.Id);
 
             builder.HasIndex(c => c.Email).IsUnique();
-            builder.Property(c => c.Email).IsRequired();
+            builder.Property(c => c.Email).IsRequired().HasMaxLength(100);
 
-            builder.Property(c => c.FirstName).IsRequired();
-            builder.Property(c => c.LastName).IsRequired();
+            builder.Property(c => c.FirstName).IsRequired().HasMaxLength(50);
+            builder.Property(c => c.LastName).IsRequired().HasMaxLength(50);
 
             builder.HasOne(c => c.Account)
                 .WithMany(a => a.Contacts)

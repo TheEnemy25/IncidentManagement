@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace IncidentManagement.Data.Repositories
 {
-    public sealed class BaseRepository<TEntity> : IBaseRepository<TEntity>
+    internal sealed class BaseRepository<TEntity> : IBaseRepository<TEntity>
       where TEntity : class, IEntity
     {
         private readonly IncidentDbContext context;

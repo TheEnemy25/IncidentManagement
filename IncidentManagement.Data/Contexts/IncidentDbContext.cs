@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IncidentManagement.Data.Contexts
 {
-    public sealed class IncidentDbContext : DbContext
+    internal sealed class IncidentDbContext : DbContext
     {
         public DbSet<Incident> Incidents { get; set; }
         public DbSet<Account> Accounts { get; set; }
