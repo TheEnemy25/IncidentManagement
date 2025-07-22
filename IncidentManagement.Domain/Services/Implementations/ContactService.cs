@@ -18,9 +18,20 @@ namespace IncidentManagement.Domain.Services.Implementations
             _mapper = mapper;
         }
 
+        public async Task<ContactDto> CreateAsync(CreateContactDto dto, CancellationToken cancellationToken)
+        {
+            var entity = _mapper.Map<Contact>(dto);
+
+            await _contactRepository.AddAsync(entity, cancellationToken);
+            await _contactRepository.SaveChangesAsync(cancellationToken);
+
+            return _mapper.Map<ContactDto>(entity);
+        }
+
         public async Task<ContactDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var entity = await _contactRepository.GetByIdAsync(id, cancellationToken);
+
             return _mapper.Map<ContactDto>(entity);
         }
 
@@ -30,14 +41,6 @@ namespace IncidentManagement.Domain.Services.Implementations
                 .FirstOrDefaultAsync(c => c.Email == email, cancellationToken);
 
             return contact == null ? null : _mapper.Map<ContactDto>(contact);
-        }
-
-        public async Task<ContactDto> CreateAsync(CreateContactDto dto, CancellationToken cancellationToken)
-        {
-            var entity = _mapper.Map<Contact>(dto);
-            await _contactRepository.AddAsync(entity, cancellationToken);
-            await _contactRepository.SaveChangesAsync(cancellationToken);
-            return _mapper.Map<ContactDto>(entity);
         }
 
         public async Task<ContactDto> UpdateAsync(UpdateContactDto dto, CancellationToken cancellationToken)
@@ -50,15 +53,18 @@ namespace IncidentManagement.Domain.Services.Implementations
             _mapper.Map(dto, entity);
 
             var updated = await _contactRepository.UpdateAsync(entity, cancellationToken);
+
             await _contactRepository.SaveChangesAsync(cancellationToken);
+
             return _mapper.Map<ContactDto>(updated);
         }
 
-        public async Task DeleteAsync(DeleteContactDto dto, CancellationToken cancellationToken)
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            var entity = await _contactRepository.GetByIdAsync(dto.Id, cancellationToken);
+            var entity = await _contactRepository.GetByIdAsync(id, cancellationToken);
+
             if (entity is null)
-                throw new KeyNotFoundException($"Contact with Id {dto.Id} not found.");
+                throw new KeyNotFoundException($"Contact with Id {id} not found.");
 
             await _contactRepository.DeleteAsync(entity, cancellationToken);
             await _contactRepository.SaveChangesAsync(cancellationToken);

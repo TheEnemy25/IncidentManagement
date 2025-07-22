@@ -42,7 +42,7 @@ namespace IncidentManagement.Api.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
-            await _accountService.DeleteAsync(new DeleteAccountDto(id), cancellationToken);
+            await _accountService.DeleteAsync(id, cancellationToken);
 
             return NoContent();
         }

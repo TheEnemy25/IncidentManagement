@@ -33,16 +33,12 @@ namespace IncidentManagement.Domain
 
             services.AddScoped<IValidator<CreateAccountDto>, CreateAccountDtoValidator>();
             services.AddScoped<IValidator<UpdateAccountDto>, UpdateAccountDtoValidator>();
-            services.AddScoped<IValidator<DeleteAccountDto>, DeleteAccountDtoValidator>();
 
             services.AddScoped<IValidator<CreateContactDto>, CreateContactDtoValidator>();
             services.AddScoped<IValidator<UpdateContactDto>, UpdateContactDtoValidator>();
-            services.AddScoped<IValidator<DeleteContactDto>, DeleteContactDtoValidator>();
-
-            services.AddScoped<IValidator<UpdateIncidentDto>, UpdateIncidentDtoValidator>();
-            services.AddScoped<IValidator<DeleteIncidentDto>, DeleteIncidentDtoValidator>();
 
             services.AddScoped<IValidator<CreateFullIncidentDto>, CreateFullIncidentDtoValidator>();
+            services.AddScoped<IValidator<UpdateIncidentDto>, UpdateIncidentDtoValidator>();
 
             return services;
         }

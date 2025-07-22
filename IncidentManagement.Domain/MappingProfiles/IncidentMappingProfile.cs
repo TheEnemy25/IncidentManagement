@@ -4,12 +4,13 @@ using IncidentManagement.Domain.Dtos.Incident;
 
 namespace IncidentManagement.Domain.MappingProfiles
 {
-    public class IncidentMappingProfile : Profile
+    internal sealed class IncidentMappingProfile : Profile
     {
         public IncidentMappingProfile()
         {
             CreateMap<UpdateIncidentDto, Incident>();
             CreateMap<Incident, IncidentDto>();
+            CreateMap<Incident, FullIncidentDto>();
         }
     }
 }

@@ -4,7 +4,7 @@ using IncidentManagement.Domain.Dtos.Contact;
 
 namespace IncidentManagement.Domain.MappingProfiles
 {
-    public class ContactMappingProfile : Profile
+    internal sealed class ContactMappingProfile : Profile
     {
         public ContactMappingProfile()
         {

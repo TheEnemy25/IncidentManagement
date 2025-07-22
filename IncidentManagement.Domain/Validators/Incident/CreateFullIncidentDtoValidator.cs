@@ -7,25 +7,25 @@ namespace IncidentManagement.Domain.Validators.Incident
     {
         public CreateFullIncidentDtoValidator()
         {
-            RuleFor(x => x.AccountName)
+            RuleFor(i => i.AccountName)
                .NotEmpty()
                .WithMessage("Account name is required")
                .MaximumLength(50)
                .WithMessage("Account name must not exceed 50 characters.");
 
-            RuleFor(x => x.ContactFirstName)
+            RuleFor(i => i.ContactFirstName)
                 .NotEmpty()
                 .WithMessage("First name is required")
                 .MaximumLength(50)
                 .WithMessage("First name must not exceed 50 characters.");
 
-            RuleFor(x => x.ContactLastName)
+            RuleFor(i => i.ContactLastName)
                 .NotEmpty()
                 .WithMessage("Last name is required")
                 .MaximumLength(50)
                 .WithMessage("Last name must not exceed 50 characters.");
 
-            RuleFor(x => x.ContactEmail)
+            RuleFor(i => i.ContactEmail)
                 .NotEmpty()
                 .WithMessage("Email is required")
                 .EmailAddress()
@@ -33,7 +33,7 @@ namespace IncidentManagement.Domain.Validators.Incident
                 .MaximumLength(100)
                 .WithMessage("Email must not exceed 100 characters.");
 
-            RuleFor(x => x.IncidentDescription)
+            RuleFor(i => i.IncidentDescription)
                 .NotEmpty()
                 .WithMessage("Incident description is required")
                 .MaximumLength(500)

@@ -47,10 +47,10 @@ namespace IncidentManagement.Api.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete([FromBody] DeleteContactDto dto, CancellationToken cancellationToken)
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
-            await _contactService.DeleteAsync(dto, cancellationToken);
+            await _contactService.DeleteAsync(id, cancellationToken);
 
             return NoContent();
         }

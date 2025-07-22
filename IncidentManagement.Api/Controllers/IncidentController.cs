@@ -47,7 +47,7 @@ namespace IncidentManagement.Api.Controllers
         [HttpDelete("{name}")]
         public async Task<IActionResult> Delete(string name, CancellationToken cancellationToken)
         {
-            await _incidentService.DeleteAsync(new DeleteIncidentDto(name), cancellationToken);
+            await _incidentService.DeleteAsync(name, cancellationToken);
 
             return NoContent();
         }

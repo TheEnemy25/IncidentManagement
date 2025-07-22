@@ -18,21 +18,30 @@ namespace IncidentManagement.Domain.Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<AccountDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
-        {
-            var entity = await _accountRepository.GetByIdAsync(id, cancellationToken);
-
-            return _mapper.Map<AccountDto>(entity);
-        }
-
         public async Task<AccountDto> CreateAsync(CreateAccountDto dto, CancellationToken cancellationToken)
         {
             var account = _mapper.Map<Account>(dto);
+
+            var contact = new Contact
+            {
+                FirstName = dto.ContactFirstName,
+                LastName = dto.ContactLastName,
+                Email = dto.ContactEmail,
+            };
+
+            account.Contacts ??= [contact];
 
             await _accountRepository.AddAsync(account, cancellationToken);
             await _accountRepository.SaveChangesAsync(cancellationToken);
 
             return _mapper.Map<AccountDto>(account);
+        }
+
+        public async Task<AccountDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var entity = await _accountRepository.GetByIdAsync(id, cancellationToken);
+
+            return _mapper.Map<AccountDto>(entity);
         }
 
         public async Task<AccountDto> UpdateAsync(UpdateAccountDto dto, CancellationToken cancellationToken)
@@ -47,15 +56,16 @@ namespace IncidentManagement.Domain.Services.Implementations
             var updated = await _accountRepository.UpdateAsync(entity, cancellationToken);
 
             await _accountRepository.SaveChangesAsync(cancellationToken);
+
             return _mapper.Map<AccountDto>(updated);
         }
 
-        public async Task DeleteAsync(DeleteAccountDto dto, CancellationToken cancellationToken)
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            var entity = await _accountRepository.GetByIdAsync(dto.Id, cancellationToken);
+            var entity = await _accountRepository.GetByIdAsync(id, cancellationToken);
 
             if (entity is null)
-                throw new KeyNotFoundException($"Account with Id {dto.Id} not found.");
+                throw new KeyNotFoundException($"Account with Id {id} not found.");
 
             await _accountRepository.DeleteAsync(entity, cancellationToken);
             await _accountRepository.SaveChangesAsync(cancellationToken);

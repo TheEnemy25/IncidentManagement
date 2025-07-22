@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using IncidentManagement.Data.Entities;
 using IncidentManagement.Data.Repositories;
+using IncidentManagement.Domain.Dtos.Account;
+using IncidentManagement.Domain.Dtos.Contact;
 using IncidentManagement.Domain.Dtos.Incident;
 using IncidentManagement.Domain.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
@@ -26,35 +28,12 @@ namespace IncidentManagement.Domain.Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<IncidentDto> GetByNameAsync(string name, CancellationToken cancellationToken)
+        public async Task<FullIncidentDto> HandleFullIncidentCreationAsync(CreateFullIncidentDto dto, CancellationToken cancellationToken)
         {
-            var incident = await _incidentRepository.Query().FirstOrDefaultAsync(i => i.Name == name);
-
-            return _mapper.Map<IncidentDto>(incident);
-        }
-
-        public async Task<IncidentDto> UpdateAsync(UpdateIncidentDto dto, CancellationToken cancellationToken)
-        {
-            var entity = await _incidentRepository.GetByIdAsync(dto.Name);
-            entity.Description = dto.Description;
-
-            var updated = await _incidentRepository.UpdateAsync(entity, cancellationToken);
-
-            await _incidentRepository.SaveChangesAsync(cancellationToken);
-            return _mapper.Map<IncidentDto>(updated);
-        }
-
-        public async Task DeleteAsync(DeleteIncidentDto dto, CancellationToken cancellationToken)
-        {
-            var entity = await _incidentRepository.GetByIdAsync(dto.Name);
-
-            await _incidentRepository.DeleteAsync(entity, cancellationToken);
-            await _incidentRepository.SaveChangesAsync(cancellationToken);
-        }
-
-        public async Task<IncidentDto> HandleFullIncidentCreationAsync(CreateFullIncidentDto dto, CancellationToken cancellationToken)
-        {
-            var account = await _accountRepository.Query().FirstOrDefaultAsync(a => a.Name == dto.AccountName, cancellationToken);
+            var account = await _accountRepository
+             .Query()
+             .Include(a => a.Contacts)
+             .FirstOrDefaultAsync(a => a.Name == dto.AccountName, cancellationToken);
 
             if (account is null)
                 throw new KeyNotFoundException("Account not found");
@@ -71,7 +50,6 @@ namespace IncidentManagement.Domain.Services.Implementations
 
                 await _contactRepository.UpdateAsync(contact, cancellationToken);
             }
-
             else
             {
                 contact = new Contact
@@ -96,7 +74,43 @@ namespace IncidentManagement.Domain.Services.Implementations
             await _incidentRepository.AddAsync(incident, cancellationToken);
             await _incidentRepository.SaveChangesAsync(cancellationToken);
 
+            var result = new FullIncidentDto(
+                incident.Name,
+                incident.Description,
+                _mapper.Map<AccountDto>(account),
+                _mapper.Map<List<ContactDto>>(account.Contacts)
+            );
+
+            return result;
+        }
+
+        public async Task<IncidentDto> GetByNameAsync(string name, CancellationToken cancellationToken)
+        {
+            var incident = await _incidentRepository.Query().FirstOrDefaultAsync(i => i.Name == name);
+
             return _mapper.Map<IncidentDto>(incident);
+        }
+
+        public async Task<IncidentDto> UpdateAsync(UpdateIncidentDto dto, CancellationToken cancellationToken)
+        {
+            var entity = await _incidentRepository.GetByIdAsync(dto.Name);
+            entity.Description = dto.Description;
+
+            var updated = await _incidentRepository.UpdateAsync(entity, cancellationToken);
+
+            await _incidentRepository.SaveChangesAsync(cancellationToken);
+            return _mapper.Map<IncidentDto>(updated);
+        }
+
+        public async Task DeleteAsync(string name, CancellationToken cancellationToken)
+        {
+            var entity = await _incidentRepository.GetByIdAsync(name);
+
+            if (entity is null)
+                throw new KeyNotFoundException($"Incident with name '{name}' not found.");
+
+            await _incidentRepository.DeleteAsync(entity, cancellationToken);
+            await _incidentRepository.SaveChangesAsync(cancellationToken);
         }
     }
 }

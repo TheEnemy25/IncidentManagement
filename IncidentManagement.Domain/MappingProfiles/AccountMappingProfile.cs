@@ -4,7 +4,7 @@ using IncidentManagement.Domain.Dtos.Account;
 
 namespace IncidentManagement.Domain.MappingProfiles
 {
-    public class AccountMappingProfile : Profile
+    internal sealed class AccountMappingProfile : Profile
     {
         public AccountMappingProfile()
         {
